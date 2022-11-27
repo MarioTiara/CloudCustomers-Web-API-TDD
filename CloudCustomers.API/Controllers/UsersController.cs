@@ -1,3 +1,4 @@
+using CloudCustomers.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudCustomers.API.Controllers
@@ -6,28 +7,19 @@ namespace CloudCustomers.API.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
         private readonly ILogger<UsersController> _logger;
-
-        public UsersController(ILogger<UsersController> logger)
+        private readonly IUsersService _usersService;
+        public UsersController(IUsersService usersService)
         {
-            _logger = logger;
+           // _logger = logger;
+           _usersService = usersService;    
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet(Name = "GetUsers")]
+        public async Task<IActionResult> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            var users= await _usersService.GetAllUsers();
+            return Ok("all good");
         }
     }
 }
