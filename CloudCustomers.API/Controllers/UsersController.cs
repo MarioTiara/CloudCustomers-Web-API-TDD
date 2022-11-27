@@ -19,7 +19,7 @@ namespace CloudCustomers.API.Controllers
         public async Task<IActionResult> Get()
         {
             var users= await _usersService.GetAllUsers();
-            return Ok("all good");
+            return Ok(users);
         }
     }
 }
