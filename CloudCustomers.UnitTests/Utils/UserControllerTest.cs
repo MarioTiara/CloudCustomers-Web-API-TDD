@@ -4,11 +4,6 @@ using CloudCustomers.API.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CloudCustomers.UnitTests.Utils
 {
@@ -18,10 +13,10 @@ namespace CloudCustomers.UnitTests.Utils
         public async Task Get_OnSuccess_ReturnsStatusCode200()
         {
             //arrange
-            var mockUUserService = new Mock<IUsersService>();
-            mockUUserService.Setup(service => service.GetAllUsers())
+            var mockUserService = new Mock<IUsersService>();
+            mockUserService.Setup(service => service.GetAllUsers())
                 .ReturnsAsync(new List<User>());
-            var sut = new UsersController(mockUUserService.Object);
+            var sut = new UsersController(mockUserService.Object);
             //act
             var result= (OkObjectResult)await sut.Get();
             //Assert
@@ -30,14 +25,41 @@ namespace CloudCustomers.UnitTests.Utils
         [Fact]
         public async Task Get_OnSuccess_InvokeUserService()
         {
-            var mockUUserService = new Mock<IUsersService>();
-            mockUUserService.Setup(service => service.GetAllUsers())
+            //arrange
+            var mockUserService = new Mock<IUsersService>();
+            mockUserService.Setup(service => service.GetAllUsers())
                 .ReturnsAsync(new List<User>());
-            var sut = new UsersController(mockUUserService.Object);
+            var sut = new UsersController(mockUserService.Object);
+           
+            //act
             var result = await sut.Get();
-            mockUUserService.Verify(
+
+            //assert
+            mockUserService.Verify(
                 service=>service.GetAllUsers(), 
                 Times.Once());
+
+            
+        }
+
+        [Fact]
+        public async Task Get_OnSuccess_ReturnsListOfUsers()
+        {
+            //arrange
+            var mockUsersService= new Mock<IUsersService>();
+            mockUsersService
+                .Setup(service => service.GetAllUsers())
+                .ReturnsAsync(new List<User>());
+            var sut = new UsersController(mockUsersService.Object);
+
+            //Act
+            var result = await sut.Get();
+
+            //Asert
+            result.Should().BeOfType<OkObjectResult>();
+            var objectResult=(OkObjectResult)result;
+            objectResult.Value.Should().BeOfType<List<User>>();
+
         }
     }
 }
