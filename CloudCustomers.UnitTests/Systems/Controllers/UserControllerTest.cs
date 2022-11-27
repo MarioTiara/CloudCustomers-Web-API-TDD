@@ -6,7 +6,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace CloudCustomers.UnitTests.Utils
+namespace CloudCustomers.UnitTests.Systems.Controllers
 {
     public class UserControllerTest
     {
@@ -17,11 +17,11 @@ namespace CloudCustomers.UnitTests.Utils
             var mockUserService = new Mock<IUsersService>();
             mockUserService.Setup(service => service.GetAllUsers())
                 .ReturnsAsync(UserFixture.GetTestUsers());
-                
-                
+
+
             var sut = new UsersController(mockUserService.Object);
             //act
-            var result= (OkObjectResult)await sut.Get();
+            var result = (OkObjectResult)await sut.Get();
             //Assert
             result.StatusCode.Should().Be(200);
         }
@@ -33,13 +33,13 @@ namespace CloudCustomers.UnitTests.Utils
             mockUserService.Setup(service => service.GetAllUsers())
                 .ReturnsAsync(new List<User>());
             var sut = new UsersController(mockUserService.Object);
-           
+
             //act
             var result = await sut.Get();
 
             //assert
             mockUserService.Verify(
-                service=>service.GetAllUsers(), 
+                service => service.GetAllUsers(),
                 Times.Once());
         }
 
@@ -47,11 +47,11 @@ namespace CloudCustomers.UnitTests.Utils
         public async Task Get_OnSuccess_ReturnsListOfUsers()
         {
             //arrange
-            var mockUsersService= new Mock<IUsersService>();
+            var mockUsersService = new Mock<IUsersService>();
             mockUsersService
                 .Setup(service => service.GetAllUsers())
                 .ReturnsAsync(UserFixture.GetTestUsers());
-                
+
             var sut = new UsersController(mockUsersService.Object);
 
             //Act
@@ -59,7 +59,7 @@ namespace CloudCustomers.UnitTests.Utils
 
             //Asert
             result.Should().BeOfType<OkObjectResult>();
-            var objectResult=(OkObjectResult)result;
+            var objectResult = (OkObjectResult)result;
             objectResult.Value.Should().BeOfType<List<User>>();
 
         }
