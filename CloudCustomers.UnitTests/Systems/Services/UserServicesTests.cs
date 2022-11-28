@@ -54,7 +54,7 @@ namespace CloudCustomers.UnitTests.Systems.Services
         }
 
         [Fact]
-        public async Task GetAllUsers_WhenCalled_Returns404()
+        public async Task GetAllUsers_WhenHit404_ReturnsEmptyListOfUsers()
         {
             //Arrange
             var hanlderMock = MockHttpMessageHandler<User>
@@ -67,5 +67,22 @@ namespace CloudCustomers.UnitTests.Systems.Services
             //Assert
             result.Count.Should().Be(0);
         }
+
+        [Fact]
+        public async Task GetAllUsers_WhenCalled_ReturnsListOfUsersOfExpectedSize()
+        {
+            //Arrange
+            var expectedResponse = UserFixture.GetTestUsers();
+            var hanlderMock = MockHttpMessageHandler<User>
+                .SetupBasicGetResourceList(expectedResponse);
+            var httpClient = new HttpClient(hanlderMock.Object);
+            var sut = new UsersService(httpClient);
+
+            //Act
+            var result = await sut.GetAllUsers();
+            //Assert
+            result.Count.Should().Be(3);
+        }
     }
+    
 }
