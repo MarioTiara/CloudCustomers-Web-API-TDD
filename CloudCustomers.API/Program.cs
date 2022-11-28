@@ -1,3 +1,4 @@
+using CloudCustomers.API.Config;
 using CloudCustomers.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddHttpClient<IUsersService, UsersService>();
+builder.Services.Configure<UserApiOptions>(
+    builder.Configuration.GetSection("UserApiOptions"));
 
 var app = builder.Build();
 

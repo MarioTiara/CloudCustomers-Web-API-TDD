@@ -18,10 +18,10 @@ namespace CloudCustomers.UnitTests.Systems.Controllers
             mockUserService.Setup(service => service.GetAllUsers())
                 .ReturnsAsync(UserFixture.GetTestUsers());
 
-
             var sut = new UsersController(mockUserService.Object);
             //act
             var result = (OkObjectResult)await sut.Get();
+
             //Assert
             result.StatusCode.Should().Be(200);
         }
